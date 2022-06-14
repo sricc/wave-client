@@ -1,8 +1,16 @@
+body {
+  padding: 20px;
+}
+
+body * {
+  box-sizing: border-box;
+}
+
 .mainContainer {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 64px;
+  margin-top: 20px;
 }
 
 .dataContainer {
@@ -74,4 +82,83 @@
   color: red;
   margin: 20px 0;
   text-align: center;
+}
+
+.formField {
+  display: block;
+  border: 1px solid grey;
+  border-radius: 4px;
+  margin: 10px 0;
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.wavesSection {
+  margin: 20px 0;
+}
+
+.wavesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+label[for="sort-order"] {
+  display: flex;
+  align-items: center;
+}
+
+.formField[name="sortOrder"] {
+  width: 125px;
+  margin-left: 10px;
+}
+
+.wavesList {
+  margin: 20px 10px;
+}
+
+.wave {
+  background-color: #5F74F7;
+  border-radius: 4px;
+  color: white;
+  padding: 10px 20px;
+  margin: 10px 0;
+}
+
+.wave:nth-of-type(even) {
+  background-color: #CDCED2;
+  color: black;
+  text-align: right;
+}
+
+.waveMessage {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.waveAddress {
+  font-size: 12px;
+}
+
+.waveTime {
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .wavesList {
+    margin: 20px 0;
+  }
+
+  .waveMessage {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .waveAddress {
+    font-size: 12px;
+  }
+
+  .waveTime {
+    font-size: 12px;
+  }
 }

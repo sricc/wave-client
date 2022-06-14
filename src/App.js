@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { useWavePortal, useMetaMask } from './hooks';
 import EthereumLogo from './EthereumLogo';
 import './App.css';
 
 export default function App() {
   const metaMask = useMetaMask();
-  const { wave, totalWaves, yourWaves, isMining } = useWavePortal({
+  const [ message, setMessage ] = useState('');
+  const [ sortOrder, setSortOrder ] = useState('descending');
+  const { wave, allWaves, totalWaves, yourWaves, isMining } = useWavePortal({
     provider: metaMask.provider,
     account: metaMask.account,
   });
+
+  const handleWave = async () => {
+    try {
+      await wave(message);
+      setMessage('');
+    } catch(error) {
+      console.error('Something went wrong with the wave:', error);
+    }
+  }
 
   return (
     <div className="mainContainer">
@@ -49,9 +60,27 @@ export default function App() {
                 metaMask.isConnected
                   ?
                     (
-                      <button className="button waveButton" onClick={wave} disabled={isMining}>
-                        { isMining ? 'Mining...' : 'Wave at Me' }
-                      </button>
+                      <>
+                        <label htmlFor="wave-message">
+                          Send a message
+                          <textarea
+                            className="formField"
+                            id="wave-message"
+                            type="text"
+                            maxLength="150"
+                            placeholder="This is the message I will send with my wave..."
+                            value={message}
+                            onChange={({ target }) => setMessage(target.value)}
+                          />
+                        </label>
+
+                        <button className="button waveButton" onClick={handleWave} disabled={!message || isMining}>
+                          {
+                            isMining ? 'Mining...'
+                            : message ? 'Wave at Me'
+                            : 'Add a message to wave...'  }
+                        </button>
+                      </>
                     )
                   :
                     (
@@ -60,6 +89,41 @@ export default function App() {
                       </button>
                     )
               }
+
+              <section className="wavesSection">
+                <header className="wavesHeader">
+                  <h2>All waves</h2>
+                  <label htmlFor="sort-order">
+                    Sort Order:
+                    <select
+                      className="formField"
+                      name="sortOrder"
+                      id="sort-order"
+                      value={sortOrder}
+                      onChange={({ target }) => setSortOrder(target.value)}
+                    >
+                      <option value="descending">Newest First</option>
+                      <option value="ascending">Oldest First</option>
+                    </select>
+                  </label>
+                </header>
+                <div className="wavesList">
+                  {
+                    allWaves
+                      .filter(({ message }) => Boolean(message))
+                      .sort(({ timestamp: a }, { timestamp: b }) =>
+                        (sortOrder === 'ascending') ? a - b : b - a
+                      )
+                      .map((wave, index) => (
+                        <div key={index} className="wave">
+                          <div className="waveMessage">"{wave.message}"</div>
+                          <div className="waveAddress">From {wave.address}</div>
+                          <div className="waveTime">Sent on {wave.timestamp.toString()}</div>
+                        </div>
+                      ))
+                  }
+                </div>
+              </section>
             </>
           )
         }

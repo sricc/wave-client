@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useContract } from './useContract';
 import WavePortal from "./WavePortal.json";
 
-const CONTRACT_ADDRESS = '0x6BA7933676eCdc05e092823457e208b33ba518bc';
+const CONTRACT_ADDRESS = '0xC4F7312064bce22654A927bBDfd2D568a5a74cA2';
 const ABI = WavePortal.abi;
 
 export const useWavePortal = ({ provider, account }) => {
+  const [allWaves, setAllWaves] = useState([]);
   const [ isMining, setIsMining ] = useState(false);
   const [ totalWaves, setTotalWaves ] = useState(0);
   const [ yourWaves, setYourWaves ] = useState(0);
@@ -16,8 +17,8 @@ export const useWavePortal = ({ provider, account }) => {
     account,
   );
 
-  const wave = async () => {
-    const waveTxn = await wavePortalContract.wave();
+  const wave = async (message) => {
+    const waveTxn = await wavePortalContract.wave(message);
     setIsMining(true);
     console.log('Mining...', waveTxn.hash);
 
@@ -25,7 +26,27 @@ export const useWavePortal = ({ provider, account }) => {
     setIsMining(false);
     console.log('Mined -- ', waveTxn.hash);
     await getWaves(account);
+    await getAllWaves();
   }
+
+  const getAllWaves = useCallback(async () => {
+    try {
+      if (provider) {
+        const waves = await wavePortalContract.getAllWaves();
+        const wavesCleaned = waves.map(wave => ({
+          address: wave.waver,
+          timestamp: new Date(wave.timestamp * 1000),
+          message: wave.message
+        }));
+
+        setAllWaves(wavesCleaned);
+      } else {
+        console.log("Ethereum object doesn't exist!")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [wavePortalContract, provider]);
 
   const getWaves = useCallback(async (account) => {
     const _totalWaves = await wavePortalContract.totalWaves();
@@ -37,11 +58,13 @@ export const useWavePortal = ({ provider, account }) => {
   useEffect(() => {
     if (wavePortalContract && account) {
       getWaves(account);
+      getAllWaves();
     }
-  }, [wavePortalContract, account, getWaves]);
+  }, [wavePortalContract, account, getWaves, getAllWaves]);
 
   return {
     wave,
+    allWaves,
     totalWaves,
     yourWaves,
     isMining,
