@@ -21,6 +21,12 @@ export default function App() {
     }
   }
 
+  const allWavesSorted = allWaves
+    .filter(({ message }) => Boolean(message))
+    .sort(({ timestamp: a }, { timestamp: b }) =>
+      (sortOrder === 'ascending') ? a - b : b - a
+    );
+
   return (
     <div className="mainContainer">
 
@@ -99,6 +105,7 @@ export default function App() {
                       className="formField"
                       name="sortOrder"
                       id="sort-order"
+                      disabled={Boolean(allWavesSorted.length)}
                       value={sortOrder}
                       onChange={({ target }) => setSortOrder(target.value)}
                     >
@@ -109,18 +116,17 @@ export default function App() {
                 </header>
                 <div className="wavesList">
                   {
-                    allWaves
-                      .filter(({ message }) => Boolean(message))
-                      .sort(({ timestamp: a }, { timestamp: b }) =>
-                        (sortOrder === 'ascending') ? a - b : b - a
-                      )
-                      .map((wave, index) => (
-                        <div key={index} className="wave">
-                          <div className="waveMessage">"{wave.message}"</div>
-                          <div className="waveAddress">From {wave.address}</div>
-                          <div className="waveTime">Sent on {wave.timestamp.toString()}</div>
-                        </div>
-                      ))
+                    allWavesSorted.length
+                      ? (
+                          <div className="noWaves">Looks like there are no waves yet... let's change that!</div>
+                        )
+                      : allWavesSorted.map((wave, index) => (
+                          <div key={`wave-${index}`} className="wave">
+                            <div className="waveMessage">"{wave.message}"</div>
+                            <div className="waveAddress">From {wave.address}</div>
+                            <div className="waveTime">Sent on {wave.timestamp.toString()}</div>
+                          </div>
+                        ))
                   }
                 </div>
               </section>

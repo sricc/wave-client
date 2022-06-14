@@ -113,6 +113,10 @@ label[for="sort-order"] {
   margin-left: 10px;
 }
 
+.noWaves {
+  color: grey;
+}
+
 .wavesList {
   margin: 20px 10px;
 }
