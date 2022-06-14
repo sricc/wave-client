@@ -117,16 +117,17 @@ export default function App() {
                 <div className="wavesList">
                   {
                     allWavesSorted.length
-                      ? (
-                          <div className="noWaves">Looks like there are no waves yet... let's change that!</div>
-                        )
-                      : allWavesSorted.map((wave, index) => (
+                      ? allWavesSorted.map((wave, index) => (
                           <div key={`wave-${index}`} className="wave">
                             <div className="waveMessage">"{wave.message}"</div>
                             <div className="waveAddress">From {wave.address}</div>
                             <div className="waveTime">Sent on {wave.timestamp.toString()}</div>
                           </div>
                         ))
+                      :
+                        (
+                          <div className="noWaves">Looks like there are no waves yet... let's change that!</div>
+                        )
                   }
                 </div>
               </section>
