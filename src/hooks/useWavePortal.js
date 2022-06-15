@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useContract } from './useContract';
 import WavePortal from "./WavePortal.json";
 
-const CONTRACT_ADDRESS = '0x10833cB2512792e80B8799739F04120a8f82D346';
+const CONTRACT_ADDRESS = '0x442c0A9BAFEB9902B44F64b62AEe175C927Ca76e';
 const ABI = WavePortal.abi;
 
 export const useWavePortal = ({ provider, account }) => {
