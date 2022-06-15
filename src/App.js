@@ -105,7 +105,7 @@ export default function App() {
                       className="formField"
                       name="sortOrder"
                       id="sort-order"
-                      disabled={Boolean(allWavesSorted.length)}
+                      disabled={!allWavesSorted.length}
                       value={sortOrder}
                       onChange={({ target }) => setSortOrder(target.value)}
                     >
