@@ -29,6 +29,9 @@ export default function App() {
 
   return (
     <div className="mainContainer">
+      <header className="mainHeader">
+        <div>{metaMask.account}</div>
+      </header>
 
       <div className="dataContainer">
         <div className="header">
