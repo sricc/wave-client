@@ -35,11 +35,11 @@ export default function App() {
 
       <div className="dataContainer">
         <div className="header">
-          <span role="img" aria-label="hand-wave">👋</span> Hey there!
+          The <span role="img" aria-label="hand-wave">👋</span> Game
         </div>
 
         <div className="bio">
-          I'm Steve! Connect your Ethereum wallet and wave at me!
+          Every wave you send gives you a chance to win ETH!
         </div>
 
         <EthereumLogo className="etheremLogo" />

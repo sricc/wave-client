@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useContract } from './useContract';
 import WavePortal from "./WavePortal.json";
 
-const CONTRACT_ADDRESS = '0x442c0A9BAFEB9902B44F64b62AEe175C927Ca76e';
+const CONTRACT_ADDRESS = '0x058633eE27F7F7ef5344dce2B9Cd7E9e16EFc63d';
 const ABI = WavePortal.abi;
 
 export const useWavePortal = ({ provider, account }) => {
@@ -25,7 +25,7 @@ export const useWavePortal = ({ provider, account }) => {
     await waveTxn.wait();
     setIsMining(false);
     console.log('Mined -- ', waveTxn.hash);
-    await getWaves(account);
+    await getWaveCounts(account);
     await getAllWaves();
   }
 
@@ -48,7 +48,7 @@ export const useWavePortal = ({ provider, account }) => {
     }
   }, [wavePortalContract, provider]);
 
-  const getWaves = useCallback(async (account) => {
+  const getWaveCounts = useCallback(async (account) => {
     const _totalWaves = await wavePortalContract.totalWaves();
     const _yourWaves = await wavePortalContract.wavesByAddress(account);
     setTotalWaves(Number(_totalWaves));
@@ -56,11 +56,31 @@ export const useWavePortal = ({ provider, account }) => {
   }, [wavePortalContract]);
 
   useEffect(() => {
+    const onNewWave = (address, timestamp, message) => {
+      console.log('NewWave', address, timestamp, message);
+      setAllWaves(prevState => [
+        ...prevState,
+        {
+          address,
+          timestamp: new Date(timestamp * 1000),
+          message,
+        },
+      ]);
+    };
+
     if (wavePortalContract && account) {
-      getWaves(account);
+      getWaveCounts(account);
       getAllWaves();
+
+      wavePortalContract.on("NewWave", onNewWave);
     }
-  }, [wavePortalContract, account, getWaves, getAllWaves]);
+
+    return () => {
+      if (wavePortalContract) {
+        wavePortalContract.off("NewWave", onNewWave);
+      }
+    };
+  }, [wavePortalContract, account, getWaveCounts, getAllWaves]);
 
   return {
     wave,
